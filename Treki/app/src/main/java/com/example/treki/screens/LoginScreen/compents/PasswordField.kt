@@ -18,36 +18,37 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import com.example.treki.screens.LoginScreen.LoginViewModel
 import androidx.compose.material.icons.filled.*
+import com.example.treki.MainEvent
+import com.example.treki.MainState
 
 @Composable
 fun passwordField(
     modifier: Modifier = Modifier,
     hint: String,
-    value: String,
-    onValueChange: (String) -> Unit,
-    leadingIcon:  @Composable (() -> Unit),
-    viewModel: LoginViewModel
-    ) {
-    val passwordVisible by viewModel.isVisible.collectAsState()
-    Column(
-        modifier = modifier//.padding(vertical = 8.dp)
-    ) {
+    value: String, // Accept password value
+    isPasswordVisible: Boolean, // Accept visibility state
+    onValueChange: (String) -> Unit, // Handle password changes
+    onToggleVisibility: () -> Unit, // Handle visibility toggle
+    leadingIcon: @Composable (() -> Unit)
+) {
+    Column(modifier = modifier) {
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = value,
-            onValueChange = onValueChange,
+            onValueChange = onValueChange, // Use passed event handler
             placeholder = { Text(hint) },
             leadingIcon = leadingIcon,
             trailingIcon = {
-                val image = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                IconButton(onClick = { viewModel.updateVisible()  }) {
-                    Icon(imageVector = image, contentDescription = "Toggle Password Visibility")
+                val image = if (isPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                IconButton(onClick = onToggleVisibility) {
+                    Icon(imageVector = image,contentDescription = "Toggle Password Visibility")
                 }
             },
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
             singleLine = true,
-
-            )
+        )
     }
 }
+
+

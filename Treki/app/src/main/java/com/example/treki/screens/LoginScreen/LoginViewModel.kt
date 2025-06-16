@@ -9,26 +9,35 @@ import kotlinx.coroutines.flow.update
 
 class LoginViewModel : ViewModel() {
 
-    private val _state= MutableStateFlow(MainState())
+    private val _state= MutableStateFlow(LoginState())
     val state=_state.asStateFlow()
 
-    fun onEvent(event: MainEvent){
-        when(event){
-            is MainEvent.OnEmailChanged -> updateUsername(event.email)
-            is MainEvent.OnPasswordChanged -> updatePassword(event.password)
-            is MainEvent.OnIsVisibleChanged -> updateIsVisible(event.isVisible)
-            MainEvent.OnLogin -> login()
+    fun onEvent(event: LoginEvent) {
+        when (event) {
+            is LoginEvent.OnEmailChanged -> updateUsername(event.email)
+            is LoginEvent.OnPasswordChanged -> updatePassword(event.password)
+            is LoginEvent.OnIsVisibleChanged -> updateIsVisible(event.isVisible)
+            LoginEvent.OnLogin -> login()
+            LoginEvent.TogglePasswordVisibility -> togglePasswordVisibility()
         }
     }
+
+    private fun togglePasswordVisibility() {
+        _state.update { currentState ->
+            currentState.copy(isVisible = !currentState.isVisible)
+        }
+    }
+
+
 
     private fun login() {
 
     }
 
-    private fun updateIsVisible(newisVisible: Boolean) {
+    private fun updateIsVisible(newIsVisible: Boolean) {
         _state.update {
             it.copy(
-                isVisible = newisVisible
+                isVisible = newIsVisible
             )
         }
     }
@@ -48,27 +57,6 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-
-//    private val _email = MutableStateFlow("")
-//    val email=_email.asStateFlow()
-//
-//    private val _password= MutableStateFlow("")
-//    val password=_password.asStateFlow()
-//
-//    private val _isVisible= MutableStateFlow(false)
-//    val isVisible=_isVisible.asStateFlow()
-//
-//    fun updateEmail(newEmail: String){
-//        _email.value=newEmail
-//    }
-//
-//    fun updatePassword(newPw: String){
-//        _password.value=newPw
-//    }
-//
-//    fun updateVisible(){
-//        _isVisible.value=!_isVisible.value
-//    }
 
 
 

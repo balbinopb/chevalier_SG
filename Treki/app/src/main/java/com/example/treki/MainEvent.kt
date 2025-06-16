@@ -5,4 +5,6 @@ sealed interface MainEvent {
     data class OnPasswordChanged(val password: String): MainEvent
     data class OnIsVisibleChanged(val isVisible: Boolean): MainEvent
     data object OnLogin:MainEvent
+    data object TogglePasswordVisibility : MainEvent
+
 }

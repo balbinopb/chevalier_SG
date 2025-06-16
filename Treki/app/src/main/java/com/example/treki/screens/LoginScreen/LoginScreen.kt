@@ -1,4 +1,4 @@
-package com.example.treki.screens.LoginScreen
+
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,34 +17,32 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.treki.MainEvent
-import com.example.treki.MainState
+import com.example.treki.HomeScreen
 import com.example.treki.R
+import com.example.treki.screens.LoginScreen.LoginEvent
+import com.example.treki.screens.LoginScreen.LoginState
 import com.example.treki.screens.LoginScreen.compents.passwordField
 import com.example.treki.screens.LoginScreen.compents.textField
 import com.example.treki.ui.theme.PrimaryColor
+import kotlin.reflect.KFunction1
 
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier,state:MainState,onEvent: (MainState)->Unit) {
+fun LoginScreen(
+    modifier: Modifier = Modifier,
+    onNavigate: (Any)->Unit,
+    state: LoginState,
+    onEvent: KFunction1<LoginEvent, Unit>
+) {
 
-//    val pacifico = FontFamily(
-//        GoogleFont("Pacifico")
-//    )
     val pacifico = FontFamily(Font(R.font.pacifico_regular))
-
-//    val email by viewModel.email.collectAsState()
-//    val password by viewModel.password.collectAsState()
 
     Surface {
         Column (
@@ -70,13 +68,10 @@ fun LoginScreen(modifier: Modifier = Modifier,state:MainState,onEvent: (MainStat
             Spacer(modifier=Modifier.height(37.dp))
             textField(
                 modifier = Modifier.fillMaxWidth(),
-                ///label = "email",
                 hint = "email",
                 value = state.email,
                 onValueChange = { newEmail ->
-                    //username = newUsername
-                    //viewModel.updateEmail(newEmail)
-                    onEvent(MainEvent.OnEmailChanged(newEmail))
+                    onEvent(LoginEvent.OnEmailChanged(newEmail))
                 },
                 leadingIcon = {
                     Icon(
@@ -88,27 +83,23 @@ fun LoginScreen(modifier: Modifier = Modifier,state:MainState,onEvent: (MainStat
             Spacer(modifier=Modifier.height(4.dp))
             passwordField(
                 modifier = Modifier.fillMaxWidth(),
-                //label = "Password",
                 hint = "Password",
-                value = state.password,
-                onValueChange = { newPassword ->
-                    //password = text
-                    //viewModel.updatePassword(newPassword)
-                    onEvent(MainEvent.OnPasswordChanged(newPassword))
-                },
+                value = state.password, // Use state password value
+                isPasswordVisible = state.isVisible, // Use state visibility
+                onValueChange = { newPassword -> onEvent(LoginEvent.OnPasswordChanged(newPassword)) },
+                onToggleVisibility = { onEvent(LoginEvent.TogglePasswordVisibility) }, // Use the new event
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Lock,
                         contentDescription = "Password"
                     )
-                },
-                viewModel = LoginViewModel()
-
+                }
             )
+
 
             Button(
                 onClick = {
-
+                    onNavigate(HomeScreen)
                 },
                 modifier = Modifier
                     .fillMaxWidth()

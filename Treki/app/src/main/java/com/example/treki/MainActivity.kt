@@ -1,20 +1,18 @@
 package com.example.treki
 
+ 
+import LoginScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.treki.screens.LoginScreen.LoginScreen
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import org.cheva.miniprojecttodolist.dashboard.HomeScreen
 import com.example.treki.screens.LoginScreen.LoginViewModel
 import com.example.treki.ui.theme.TrekiTheme
 
@@ -24,17 +22,39 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TrekiTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val viewmodel= viewModel<LoginViewModel>()
-                    val state by viewmodel.state.collectAsState()
-                    LoginScreen(
-                        modifier = Modifier.padding(innerPadding),
-                        //viewModel=viewmodel
-                        state=state,
-                        onEvent = viewModel::onEvent
+                val navController = rememberNavController()
+                NavHost(
+                    startDestination = LoginScreen,
+                    navController = navController,
+                    builder = {
+                        composable<LoginScreen> {
+                            val viewModel = viewModel<LoginViewModel>()
+                            val state by viewModel.state.collectAsStateWithLifecycle()
+                            LoginScreen(
 
-                     )
-                }
+                                onNavigate = {destination->
+                                    navController.navigate(destination)
+                                },
+                                state = state,
+                                onEvent = viewModel::onEvent
+                            )
+                        }
+                        composable<HomeScreen> {
+                            HomeScreen()
+                        }
+                    }
+                )
+//                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+//                    val viewModel = viewModel<LoginViewModel>()
+//                    val state by viewModel.state.collectAsState()
+//                    LoginScreen(
+//                        modifier = Modifier.padding(innerPadding),
+//                        //viewModel=viewmodel
+//                        state = state,
+//                        onEvent = viewModel::onEvent
+//
+//                     )
+//                }
             }
         }
     }

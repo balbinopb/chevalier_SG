@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">TodoList</string>
+    <string name="visibility_on">visibility</string>
+    <string name="visibility_off">visibilityOff</string>
+</resources>
